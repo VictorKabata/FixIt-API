@@ -25,10 +25,10 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", DbUser, DbPassword, DbHost, DbPort, DbName)
 		server.DB, err = gorm.Open(Dbdriver, DBURL)
 		if err != nil {
-			fmt.Printf("Cannot connect to %s database", Dbdriver)
-			log.Fatal("This is the error:", err)
+			fmt.Printf("Cannot connect to %s database\n", Dbdriver)
+			log.Fatal("Error:", err)
 		} else {
-			fmt.Printf("We are connected to the %s database", Dbdriver)
+			fmt.Printf("Connected successfully to the %s database\n", Dbdriver)
 		}
 	}
 
@@ -36,10 +36,10 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
 		server.DB, err = gorm.Open(Dbdriver, DBURL)
 		if err != nil {
-			fmt.Printf("Cannot connect to %s database", Dbdriver)
-			log.Fatal("This is the error:", err)
+			fmt.Printf("Cannot connect to %s database\n", Dbdriver)
+			log.Fatal("Error:", err)
 		} else {
-			fmt.Printf("We are connected to the %s database", Dbdriver)
+			fmt.Printf("Connected successfully to the %s database\n", Dbdriver)
 		}
 	}
 
@@ -52,6 +52,6 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 
 //Set listening port
 func (server *Server) Run(addr string) {
-	fmt.Println("Listening to port 8080")
+	fmt.Println("Listening to port:" + addr)
 	log.Fatal(http.ListenAndServe(addr, server.Router))
 }
