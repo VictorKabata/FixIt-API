@@ -33,12 +33,17 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	token, err := server.SignIn(user.Email, user.Password)
+
+	response := map[string]string{
+		"token": token,
+	}
+
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 		return
 	}
-	responses.JSON(w, http.StatusOK, token)
+	responses.JSON(w, http.StatusOK, response)
 }
 
 //Endpoint to register users
