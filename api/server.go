@@ -15,6 +15,12 @@ func Run() {
 
 	var port = os.Getenv("PORT")
 
+	var DB_HOST = "us-cdbr-east-05.cleardb.net"
+	var DB_DRIVER = "mysql"
+	var DB_USER = "b4349f229cb9d8"
+	var DB_PASSWORD = "786bb4c4"
+	var DB_NAME = "heroku_f35f1129c94b864"
+
 	var err error
 	//err = godotenv.Load()
 	if err != nil {
@@ -23,7 +29,7 @@ func Run() {
 		fmt.Println("Fetching the env values")
 	}
 
-	server.Initialize(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
+	server.Initialize(DB_DRIVER, DB_USER, DB_PASSWORD, DB_HOST, DB_NAME)
 
 	server.Run(":" + port) //Port for listening and serving requests.
 
