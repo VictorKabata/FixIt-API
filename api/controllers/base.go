@@ -19,6 +19,8 @@ type Server struct {
 //Initializes the database connection and mux routers
 func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbHost, DbName string) {
 
+
+	
 	var err error
 
 	if Dbdriver == "mysql" {
