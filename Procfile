@@ -1,1 +1,1 @@
-web: fixit-server.exe
+web: fixit-server
