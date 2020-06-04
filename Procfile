@@ -1,1 +1,1 @@
-web: fixit-server
+web: App

@@ -14,7 +14,7 @@ var server = controllers.Server{}
 //Initializing the server connection.
 func Run() {
 
-	port := os.Getenv("PORT")
+	var port = os.Getenv("PORT")
 
 	var err error
 	err = godotenv.Load()
