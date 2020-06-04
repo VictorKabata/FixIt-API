@@ -1,1 +1,1 @@
-web: App.exe
+web: go run .
