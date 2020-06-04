@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/victorkabata/FixIt/api/controllers"
 )
 
@@ -17,7 +16,7 @@ func Run() {
 	var port = os.Getenv("PORT")
 
 	var err error
-	err = godotenv.Load()
+	//err = godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error fetching env, not coming through %v", err)
 	} else {
