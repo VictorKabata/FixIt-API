@@ -1,1 +1,1 @@
-web: App.exe
+web: fix-it-server
