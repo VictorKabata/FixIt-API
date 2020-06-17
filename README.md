@@ -1,5 +1,5 @@
 # FixIt Server
- FixIt app server-side code written in golang
+ Authentication API written in golang.
 
 # Home Endpoint
 This is the home endpoint of the api.
