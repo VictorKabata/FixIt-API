@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//Endpoint to register users
+//Endpoint to signin users
 func (server *Server) SignIn(email, password string) (int, map[string]interface{}) {
 	var err error
 
@@ -20,11 +20,11 @@ func (server *Server) SignIn(email, password string) (int, map[string]interface{
 
 	err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
 	if err != nil {
-		return http.Unauthorized, map[string]interface{}{"message": "User not found"}
+		return http.StatusUnauthorized, map[string]interface{}{"message": "User not found"}
 	}
 	err = models.VerifyPassword(user.Password, password)
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return http.Unauthorized, map[string]interface{}{"message": "Incorrect password"}
+		return http.StatusUnauthorized, map[string]interface{}{"message": "Incorrect password"}
 	}
 	response := responses.PrepareResponse(&user)
 
@@ -51,16 +51,12 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
-	token, err := server.SignIn(user.Email, user.Password)
 
-	response := map[string]string{
-		"token": token,
-	}
-
+	status, login := server.SignIn(user.Email, user.Password)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
 		responses.ERROR(w, http.StatusUnprocessableEntity, formattedError)
 		return
 	}
-	responses.JSON(w, http.StatusOK, response)
+	responses.JSON(w, status, login)
 }

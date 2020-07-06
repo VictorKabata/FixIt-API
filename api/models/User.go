@@ -14,13 +14,13 @@ import (
 
 //Model of the user table in database
 type User struct {
-	ID       uint32 `gorm:"primary_key; auto_increment" json:"id"`
-	Username string `gorm:"size:255;not null;unique" json:"username"`
-	Email    string `gorm:"size:100;not null;unique" json:"email"`
-	Phone    string `gorm:"size:25;not null;unique" json:"phone_number"`
-	Password string `gorm:"size:100;not null" json:"password"`
-	//CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	//UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	ID        uint32    `gorm:"primary_key; auto_increment" json:"id"`
+	Username  string    `gorm:"size:255;not null;unique" json:"username"`
+	Email     string    `gorm:"size:100;not null;unique" json:"email"`
+	Phone     string    `gorm:"size:25;not null;unique" json:"phone_number"`
+	Password  string    `gorm:"size:100;not null" json:"password"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 //Encrypt password
@@ -47,8 +47,8 @@ func (u *User) Prepare() {
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.Phone = html.EscapeString(strings.TrimSpace(u.Phone))
-	//u.CreatedAt = time.Now()
-	//u.UpdatedAt = time.Now()
+	u.CreatedAt = time.Now()
+	u.UpdatedAt = time.Now()
 }
 
 //User input validation
