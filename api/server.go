@@ -14,7 +14,7 @@ var server = controllers.Server{}
 //Initializing the server connection.
 func Run() {
 
-	//var port = os.Getenv("PORT")
+	var port = os.Getenv("PORT")
 
 	var err error
 	err = godotenv.Load()
@@ -26,6 +26,6 @@ func Run() {
 
 	server.Initialize(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
 
-	server.Run(":8080") //Port for listening and serving requests.
+	server.Run(":" + port) //Port for listening and serving requests.
 
 }
