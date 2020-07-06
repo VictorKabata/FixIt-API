@@ -30,16 +30,17 @@ func ERROR(w http.ResponseWriter, statusCode int, err error) {
 }
 
 func PrepareResponse(user *models.User) map[string]interface{} {
-	responseUser := &models.User{
+	token, _ := auth.CreateToken(user.ID)
+
+	responseUser := &models.ResponseUser{
 		ID:       user.ID,
 		Username: user.Username,
 		Email:    user.Email,
 		Phone:    user.Phone,
+		Token:    token,
 	}
 
-	token, _ := auth.CreateToken(user.ID)
 	var response = map[string]interface{}{"message": "Successful"}
-	response["jwt"] = token
 	response["user"] = responseUser
 
 	return response
