@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/victorkabata/FixIt/api/auth"
-	"github.com/victorkabata/FixIt/api/responses"
+	"github.com/victorkabata/FixIt-API/api/auth"
+	"github.com/victorkabata/FixIt-API/api/responses"
 )
 
 //Formats all responses to JSON format

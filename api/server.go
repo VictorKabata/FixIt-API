@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/victorkabata/FixIt/api/controllers"
+	"github.com/joho/godotenv"
+	"github.com/victorkabata/FixIt-API/api/controllers"
 )
 
 var server = controllers.Server{}
@@ -13,10 +14,10 @@ var server = controllers.Server{}
 //Initializing the server connection.
 func Run() {
 
-	var port = os.Getenv("PORT")
+	//var port = os.Getenv("PORT")
 
 	var err error
-	//err = godotenv.Load()
+	err = godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error fetching env, not coming through %v", err)
 	} else {
@@ -25,6 +26,6 @@ func Run() {
 
 	server.Initialize(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
 
-	server.Run(":" + port) //Port for listening and serving requests.
+	server.Run(":8080") //Port for listening and serving requests.
 
 }

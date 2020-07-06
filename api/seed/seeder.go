@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	"github.com/victorkabata/FixIt/api/models"
+	"github.com/victorkabata/FixIt-API/api/models"
 )
 
 //Prepopulate this data on startup

@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/victorkabata/FixIt-API/api/auth"
+	"github.com/victorkabata/FixIt-API/api/models"
 )
 
 func JSON(w http.ResponseWriter, statusCode int, data interface{}) {
@@ -24,4 +27,20 @@ func ERROR(w http.ResponseWriter, statusCode int, err error) {
 		return
 	}
 	JSON(w, http.StatusBadRequest, nil)
+}
+
+func PrepareResponse(user *models.User) map[string]interface{} {
+	responseUser := &models.User{
+		ID:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
+		Phone:    user.Phone,
+	}
+
+	token, _ := auth.CreateToken(user.ID)
+	var response = map[string]interface{}{"message": "Successful"}
+	response["jwt"] = token
+	response["user"] = responseUser
+
+	return response
 }

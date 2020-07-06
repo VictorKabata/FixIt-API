@@ -9,10 +9,10 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/victorkabata/FixIt/api/auth"
-	"github.com/victorkabata/FixIt/api/models"
-	"github.com/victorkabata/FixIt/api/responses"
-	"github.com/victorkabata/FixIt/api/utils/formaterror"
+	"github.com/victorkabata/FixIt-API/api/auth"
+	"github.com/victorkabata/FixIt-API/api/models"
+	"github.com/victorkabata/FixIt-API/api/responses"
+	"github.com/victorkabata/FixIt-API/api/utils/formaterror"
 )
 
 //Endpoint to create a new user

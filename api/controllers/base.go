@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/victorkabata/FixIt/api/models"
+	"github.com/victorkabata/FixIt-API/api/models"
 )
 
 type Server struct {

@@ -1,6 +1,6 @@
 package controllers
 
-import "github.com/victorkabata/FixIt/api/middlewares"
+import "github.com/victorkabata/FixIt-API/api/middlewares"
 
 //Initializes all the endpoints/routes.
 func (s *Server) initializeRoutes() {

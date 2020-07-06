@@ -1,4 +1,4 @@
-# FixIt Server
+# FixIt-API Server
  Authentication API written in golang.
 
 # Home Endpoint

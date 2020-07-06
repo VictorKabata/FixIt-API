@@ -3,10 +3,10 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/victorkabata/FixIt/api/responses"
+	"github.com/victorkabata/FixIt-API/api/responses"
 )
 
 func (server *Server) Home(w http.ResponseWriter, r *http.Request) {
-	responses.JSON(w, http.StatusOK, "Welcome To The FixIt API")
+	responses.JSON(w, http.StatusOK, "Welcome To The FixIt-API API")
 
 }
