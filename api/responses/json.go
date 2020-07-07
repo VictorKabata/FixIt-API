@@ -40,7 +40,7 @@ func PrepareResponse(user *models.User) map[string]interface{} {
 		Token:    token,
 	}
 
-	var response = map[string]interface{}{"message": "Successful"}
+	var response = map[string]interface{}{"message": "Login Successful"}
 	response["user"] = responseUser
 
 	return response
