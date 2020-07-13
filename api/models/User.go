@@ -1,13 +1,21 @@
 package models
 
 import (
+	"bytes"
 	"errors"
 	"html"
 	"log"
+	"mime/multipart"
+	"net/http"
+	"path/filepath"
 	"strings"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/badoux/checkmail"
+	"github.com/globalsign/mgo/bson"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,16 +26,19 @@ type User struct {
 	Username  string    `gorm:"size:255;not null;unique" json:"username"`
 	Email     string    `gorm:"size:100;not null;unique" json:"email"`
 	Phone     string    `gorm:"size:25;not null;unique" json:"phone_number"`
+	ImageURL  string    `gorm:"size:255;not null;unique" json:"imageURL"`
 	Password  string    `gorm:"size:100;not null" json:"password"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
+//Model the response of user-related endpoints
 type ResponseUser struct {
 	ID       uint32 `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Phone    string `json:"phone_number"`
+	ImageURL string `json:"imageURL"`
 	Token    string `json:"token"`
 }
 
@@ -183,4 +194,32 @@ func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
 		return 0, db.Error
 	}
 	return db.RowsAffected, nil
+}
+
+func UploadFileToS3(path string, s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
+	urlLink := "https://vickikbt-fixit.s3.us-east-2.amazonaws.com/"
+
+	size := fileHeader.Size
+	buffer := make([]byte, size)
+	file.Read(buffer)
+
+	// create a unique file name for the file
+	tempFileName := path + "/" + bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
+
+	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
+		Bucket:               aws.String("vickikbt-fixit"), //Bucket name
+		Key:                  aws.String(tempFileName),     //File name
+		ACL:                  aws.String("public-read"),    // Access type- public
+		Body:                 bytes.NewReader(buffer),
+		ContentLength:        aws.Int64(int64(size)),
+		ContentType:          aws.String(http.DetectContentType(buffer)),
+		ContentDisposition:   aws.String("attachment"),
+		ServerSideEncryption: aws.String("AES256"),
+		StorageClass:         aws.String("INTELLIGENT_TIERING"),
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return urlLink + tempFileName, err
 }

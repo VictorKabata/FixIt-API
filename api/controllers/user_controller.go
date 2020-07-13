@@ -6,8 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/gorilla/mux"
 	"github.com/victorkabata/FixIt-API/api/auth"
 	"github.com/victorkabata/FixIt-API/api/models"
@@ -21,29 +25,32 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 	}
+
 	user := models.User{}
 	err = json.Unmarshal(body, &user)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
+
 	user.Prepare()
 	err = user.Validate("")
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
+
 	userCreated, err := user.SaveUser(server.DB)
-
 	if err != nil {
-
 		formattedError := formaterror.FormatError(err.Error())
-
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		return
 	}
+
 	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.RequestURI, userCreated.ID))
-	responses.JSON(w, http.StatusCreated, userCreated)
+
+	response := responses.PrepareResponse(userCreated)
+	responses.JSON(w, http.StatusCreated, response)
 }
 
 //Endpoint to get all users
@@ -148,4 +155,54 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
 	responses.JSON(w, http.StatusNoContent, "")
+}
+
+func UploadProfilePic(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	maxSize := int64(10 << 20) // allow only 10MB of file size
+
+	err := r.ParseMultipartForm(maxSize)
+	if err != nil {
+		responses.ERROR(w, http.StatusRequestEntityTooLarge, errors.New("File too large"))
+		return
+	}
+
+	file, fileHeader, err := r.FormFile("upload")
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	defer file.Close()
+
+	// fileType := http.DetectContentType(file)
+	// if fileType != "image/jpeg" && fileType != "image/jpg" && fileType != "image/png" {
+	// 	responses.ERROR(w, http.StatusUnprocessableEntity, errors.New("Invalid image format"))
+	// 	return
+	// }
+
+	// create an AWS session
+	s, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-east-2"),
+		Credentials: credentials.NewStaticCredentials(
+			os.Getenv("AWS_SECRET_ID"),  // Secrete id
+			os.Getenv("AWS_SECRET_KEY"), // secret key
+			""),
+	})
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+	}
+
+	fileName, err := models.UploadFileToS3("profile", s, file, fileHeader)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	imageURL := map[string]string{
+		"imageURL": fileName,
+	}
+
+	responses.JSON(w, http.StatusCreated, imageURL)
+
 }
