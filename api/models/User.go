@@ -26,7 +26,7 @@ type User struct {
 	Username  string    `gorm:"size:255;not null;unique" json:"username"`
 	Email     string    `gorm:"size:100;not null;unique" json:"email"`
 	Phone     string    `gorm:"size:25;not null;unique" json:"phone_number"`
-	ImageURL  string    `gorm:"size:255;not null;unique" json:"imageURL"`
+	ImageURL  string    `gorm:"size:255;not null;unique" json:"image_url"`
 	Password  string    `gorm:"size:100;not null" json:"password"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
@@ -38,7 +38,7 @@ type ResponseUser struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Phone    string `json:"phone_number"`
-	ImageURL string `json:"imageURL"`
+	ImageURL string `json:"image_url"`
 	Token    string `json:"token"`
 }
 

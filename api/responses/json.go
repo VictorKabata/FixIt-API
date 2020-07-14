@@ -37,6 +37,7 @@ func PrepareResponse(user *models.User) map[string]interface{} {
 		Username: user.Username,
 		Email:    user.Email,
 		Phone:    user.Phone,
+		ImageURL: user.ImageURL,
 		Token:    token,
 	}
 
