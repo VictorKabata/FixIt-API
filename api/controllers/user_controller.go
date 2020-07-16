@@ -125,10 +125,13 @@ func (server *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		return
 	}
-	responses.JSON(w, http.StatusOK, updatedUser)
+
+	response := responses.PrepareResponse(updatedUser)
+	responses.JSON(w, http.StatusOK, response)
 }
 
 func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
 	vars := mux.Vars(r)
 
@@ -136,7 +139,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
+		responses.ERROR(w, http.StatusBadRequest, errors.New("Unauthorized"))
 		return
 	}
 	tokenID, err := auth.ExtractTokenID(r)
@@ -145,7 +148,7 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if tokenID != 0 && tokenID != uint32(uid) {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
 	_, err = user.DeleteAUser(server.DB, uint32(uid))
@@ -153,8 +156,12 @@ func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
-	responses.JSON(w, http.StatusNoContent, "")
+
+	response := map[string]string{
+		"message": "Account Deleted",
+	}
+
+	responses.JSON(w, http.StatusOK, response)
 }
 
 func UploadProfilePic(w http.ResponseWriter, r *http.Request) {

@@ -167,11 +167,11 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"password":  u.Password,
-			"username":  u.Username,
-			"phone":     u.Phone,
-			"email":     u.Email,
-			"update_at": time.Now(),
+			"username":   u.Username,
+			"email":      u.Email,
+			"phone":      u.Phone,
+			"password":   u.Password,
+			"updated_at": time.Now(),
 		},
 	)
 	if db.Error != nil {
