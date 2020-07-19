@@ -33,12 +33,16 @@ func PrepareResponse(user *models.User) map[string]interface{} {
 	token, _ := auth.CreateToken(user.ID)
 
 	responseUser := &models.ResponseUser{
-		ID:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
-		Phone:    user.Phone,
-		ImageURL: user.ImageURL,
-		Token:    token,
+		ID:             user.ID,
+		Username:       user.Username,
+		Email:          user.Email,
+		Phone:          user.Phone,
+		ImageURL:       user.ImageURL,
+		Specialisation: user.Specialisation,
+		Gender:         user.Gender,
+		Latitude:       user.Latitude,
+		Longitude:      user.Longitude,
+		Token:          token,
 	}
 
 	var response = map[string]interface{}{"message": "Successful"}
