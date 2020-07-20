@@ -28,7 +28,6 @@ type User struct {
 	Phone          string    `gorm:"size:25;not null;unique" json:"phone_number"`
 	ImageURL       string    `gorm:"size:255;not null;unique" json:"image_url"`
 	Specialisation string    `gorm:"size:255;not null" json:"specialisation"`
-	Gender         string    `gorm:"size:50;not null" json:"gender"`
 	Latitude       float32   `gorm:"size:255;not null" json:"latitude"`
 	Longitude      float32   `gorm:"size:255;not null" json:"longitude"`
 	Password       string    `gorm:"size:100;not null" json:"password"`
@@ -46,7 +45,6 @@ type ResponseUser struct {
 	Phone          string  `json:"phone_number"`
 	ImageURL       string  `json:"image_url"`
 	Specialisation string  `json:"specialisation"`
-	Gender         string  `json:"gender"`
 	Latitude       float32 `json:"latitude"`
 	Longitude      float32 `json:"longitude"`
 	Token          string  `json:"token"`
@@ -81,9 +79,6 @@ func (u *User) Prepare() {
 	u.Phone = html.EscapeString(strings.TrimSpace(u.Phone))
 	u.ImageURL = html.EscapeString(strings.TrimSpace(u.ImageURL))
 	u.Specialisation = html.EscapeString(strings.TrimSpace(u.Specialisation))
-	u.Gender = html.EscapeString(strings.TrimSpace(u.Gender))
-	// u.Latitude = 0
-	// u.Longitude = 0
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
 }
@@ -109,9 +104,6 @@ func (u *User) Validate(action string) error {
 		}
 		if u.Specialisation == "" {
 			return errors.New("Required Specialisation")
-		}
-		if u.Gender == "" {
-			return errors.New("Required Gender")
 		}
 		// if u.Latitude == 0 {
 		// 	return errors.New("Required Location")
@@ -197,12 +189,11 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"username": u.Username,
-			"email":    u.Email,
-			"phone":    u.Phone,
-			//"image_url":  u.ImageURL,
+			"username":       u.Username,
+			"email":          u.Email,
+			"phone":          u.Phone,
+			"image_url":      u.ImageURL,
 			"specialisation": u.Specialisation,
-			"gender":         u.Gender,
 			"latitude":       u.Latitude,
 			"longitude":      u.Longitude,
 			"password":       u.Password,
