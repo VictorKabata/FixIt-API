@@ -23,10 +23,10 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateUser))).Methods("PUT")
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("DELETE")
 
-	//Upload routes
-	// s.Router.HandleFunc("/uploads", middlewares.SetMiddlewareJSON(s.CreateUpload)).Methods("POST")
-	// s.Router.HandleFunc("/uploads", middlewares.SetMiddlewareJSON(s.GetUploads)).Methods("GET")
+	//Post routes
+	s.Router.HandleFunc("/posts", middlewares.SetMiddlewareJSON(s.CreatePost)).Methods("POST")
+	s.Router.HandleFunc("/posts", middlewares.SetMiddlewareJSON(s.GetPosts)).Methods("GET")
 	// s.Router.HandleFunc("/uploads/{id}", middlewares.SetMiddlewareJSON(s.GetUpload)).Methods("GET")
 	// s.Router.HandleFunc("/uploads/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateUpload))).Methods("PUT")
-	// s.Router.HandleFunc("/uploads/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUpload)).Methods("DELETE")
+	s.Router.HandleFunc("/posts/{id}", middlewares.SetMiddlewareAuthentication(s.DeletePost)).Methods("DELETE")
 }
