@@ -222,7 +222,7 @@ func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
 	return db.RowsAffected, nil
 }
 
-func UploadFileToS3(path string, s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
+func UploadProfilePicToS3(path string, s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
 	urlLink := "https://vickikbt-fixit.s3.us-east-2.amazonaws.com/"
 
 	size := fileHeader.Size

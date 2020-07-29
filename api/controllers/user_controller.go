@@ -184,12 +184,6 @@ func UploadProfilePic(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	// fileType := http.DetectContentType(file)
-	// if fileType != "image/jpeg" && fileType != "image/jpg" && fileType != "image/png" {
-	// 	responses.ERROR(w, http.StatusUnprocessableEntity, errors.New("Invalid image format"))
-	// 	return
-	// }
-
 	// create an AWS session
 	s, err := session.NewSession(&aws.Config{
 		Region: aws.String("us-east-2"),
@@ -202,7 +196,7 @@ func UploadProfilePic(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 	}
 
-	fileName, err := models.UploadFileToS3("profile", s, file, fileHeader)
+	fileName, err := models.UploadProfilePicToS3("profile", s, file, fileHeader)
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return

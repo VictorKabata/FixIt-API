@@ -1,11 +1,19 @@
 package models
 
 import (
+	"bytes"
 	"errors"
 	"html"
+	"mime/multipart"
+	"net/http"
+	"path/filepath"
 	"strings"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/globalsign/mgo/bson"
 	"github.com/jinzhu/gorm"
 )
 
@@ -90,10 +98,27 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 }
 
 //Update an existing post
+func (p *Post) UpdateAPost(db *gorm.DB) (*Post, error) {
 
+	var err error
+
+	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{Description: p.Description, Category: p.Category, Budget: p.Budget, Completed: p.Completed, UpdatedAt: time.Now()}).Error
+	if err != nil {
+		return &Post{}, err
+	}
+	if p.ID != 0 {
+		err = db.Debug().Model(&User{}).Where("id = ?", p.UserID).Take(&p.User).Error
+		if err != nil {
+			return &Post{}, err
+		}
+	}
+	return p, nil
+}
+
+//Delete a post
 func (p *Post) DeleteAPost(db *gorm.DB, pid uint64, uid uint32) (int64, error) {
 
-	db = db.Debug().Model(&Post{}).Where("id = ? and user_id = ?", pid, uid).Take(&Post{}).Delete(&Post{})
+	db = db.Debug().Model(&Post{}).Where("id = ? and author_id = ?", pid, uid).Take(&Post{}).Delete(&Post{})
 
 	if db.Error != nil {
 		if gorm.IsRecordNotFoundError(db.Error) {
@@ -102,4 +127,32 @@ func (p *Post) DeleteAPost(db *gorm.DB, pid uint64, uid uint32) (int64, error) {
 		return 0, db.Error
 	}
 	return db.RowsAffected, nil
+}
+
+func UploadPostPicToS3(path string, s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
+	urlLink := "https://vickikbt-fixit.s3.us-east-2.amazonaws.com/"
+
+	size := fileHeader.Size
+	buffer := make([]byte, size)
+	file.Read(buffer)
+
+	// create a unique file name for the file
+	tempFileName := path + "/" + bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
+
+	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
+		Bucket:               aws.String("vickikbt-fixit"), //Bucket name
+		Key:                  aws.String(tempFileName),     //File name
+		ACL:                  aws.String("public-read"),    // Access type- public
+		Body:                 bytes.NewReader(buffer),
+		ContentLength:        aws.Int64(int64(size)),
+		ContentType:          aws.String(http.DetectContentType(buffer)),
+		ContentDisposition:   aws.String("attachment"),
+		ServerSideEncryption: aws.String("AES256"),
+		StorageClass:         aws.String("INTELLIGENT_TIERING"),
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return urlLink + tempFileName, err
 }
