@@ -102,7 +102,7 @@ func (p *Post) UpdateAPost(db *gorm.DB) (*Post, error) {
 
 	var err error
 
-	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{Description: p.Description, Category: p.Category, Budget: p.Budget, Completed: p.Completed, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{Description: p.Description, Category: p.Category, Budget: p.Budget, Completed: p.Completed, ImageURL: p.ImageURL, UpdatedAt: time.Now()}).Error
 	if err != nil {
 		return &Post{}, err
 	}
