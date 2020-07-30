@@ -195,7 +195,7 @@ func UploadPostPic(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, fileHeader, err := r.FormFile("post")
+	file, fileHeader, err := r.FormFile("upload")
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
