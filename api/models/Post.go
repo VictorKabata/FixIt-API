@@ -23,7 +23,7 @@ type Post struct {
 	Description string    `gorm:"size:255;not null;unique" json:"description"`
 	Category    string    `gorm:"size:30;not null;" json:"category"`
 	ImageURL    string    `gorm:"size:255;not null;" json:"image_url"`
-	Budget      int       `gorm:"size:30;not null;" json:"budget"`
+	Budget      string    `gorm:"size:30;not null;" json:"budget"`
 	Completed   bool      `gorm:"size:255;not null;" json:"completed"`
 	Latitude    float32   `gorm:"not null" json:"latitude"`
 	Longitude   float32   `gorm:"not null" json:"longitude"`
@@ -133,7 +133,7 @@ func (p *Post) UpdateAPost(db *gorm.DB) (*Post, error) {
 //Delete a post
 func (p *Post) DeleteAPost(db *gorm.DB, pid uint64, uid uint32) (int64, error) {
 
-	db = db.Debug().Model(&Post{}).Where("id = ? and author_id = ?", pid, uid).Take(&Post{}).Delete(&Post{})
+	db = db.Debug().Model(&Post{}).Where("id = ? and user_id = ?", pid, uid).Take(&Post{}).Delete(&Post{})
 
 	if db.Error != nil {
 		if gorm.IsRecordNotFoundError(db.Error) {
