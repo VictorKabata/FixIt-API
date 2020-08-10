@@ -171,3 +171,34 @@ func UploadPostPicToS3(path string, s *session.Session, file multipart.File, fil
 
 	return urlLink + tempFileName, err
 }
+
+func (b *Booking) FindPostBookings(db *gorm.DB, pid uint64) (*[]Booking, error) {
+	var err error
+
+	booking := []Booking{}
+
+	err = db.Debug().Model(&Post{}).Limit(100).Find(&booking).Error
+	if err != nil {
+		return &[]Booking{}, err
+	}
+
+	if len(booking) > 0 {
+
+		for i := 0; i <= len(booking); i++ {
+			err = db.Debug().Model(&Booking{}).Limit(100).Where("post_id = ?", pid).Find(&booking).Error
+			if err != nil {
+				return &[]Booking{}, err
+			}
+		}
+
+		for i, _ := range booking {
+			err := db.Debug().Model(&User{}).Where("id = ?", booking[i].UserID).Take(&booking[i].User).Error
+			if err != nil {
+				return &[]Booking{}, err
+			}
+		}
+
+	}
+
+	return &booking, err
+}

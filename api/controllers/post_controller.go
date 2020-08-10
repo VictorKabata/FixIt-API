@@ -179,7 +179,7 @@ func (server *Server) DeletePost(w http.ResponseWriter, r *http.Request) {
 	post := models.Post{}
 	err = server.DB.Debug().Model(models.Post{}).Where("id = ?", pid).Take(&post).Error
 	if err != nil {
-		responses.ERROR(w, http.StatusNotFound, errors.New("Post Not Found"))
+		responses.ERROR(w, http.StatusNotFound, errors.New("Post Not Foundkp"))
 		return
 	}
 
@@ -244,4 +244,24 @@ func UploadPostPic(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusCreated, imageURL)
 
+}
+
+//Get all booking made to that post
+func (server *Server) GetPostBooking(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	booking := models.Booking{}
+
+	postBookings, err := booking.FindPostBookings(server.DB, pid)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, postBookings)
 }
