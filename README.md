@@ -12,7 +12,7 @@ This is the home endpoint of the api.
 # Enviroment variables
 This is the home endpoint of the api. Change the variables according to your MySQL's username, password and database name.
 
-*You have to create the database manually.
+* You have to create the database manually.
 ``` SQL
 CREATE DATABASE database_name;
 ```

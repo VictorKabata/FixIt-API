@@ -66,13 +66,6 @@ func (b *Booking) FindAllBookings(db *gorm.DB) (*[]Booking, error) {
 		}
 	}
 
-	// 	for i, _ := range booking {
-	// 		err := db.Debug().Model(&User{}).Where("id = ?", booking[i].BookedPost.UserID).Take(&booking[i].BookedPost.User).Error
-	// 		if err != nil {
-	// 			return &[]Booking{}, err
-	// 		}
-	// 	}
-
 	return &booking, nil
 }
 
