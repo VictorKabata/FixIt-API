@@ -69,6 +69,7 @@ func (b *Booking) FindAllBookings(db *gorm.DB) (*[]Booking, error) {
 	return &booking, nil
 }
 
+//Create a new booking for a post.
 func (b *Booking) SaveBooking(db *gorm.DB) (*Booking, error) {
 	var err error
 	err = db.Debug().Model(&Booking{}).Create(&b).Error
@@ -85,14 +86,16 @@ func (b *Booking) SaveBooking(db *gorm.DB) (*Booking, error) {
 	return b, nil
 }
 
-func (b *Booking) UpdateBooking(db *gorm.DB) (*Booking, error) {
+//Update the status of an existing booking.
+func (b *Booking) UpdateABooking(db *gorm.DB, pid uint64) (*Booking, error) {
 
 	var err error
 
-	err = db.Debug().Model(&Booking{}).Where("id = ?", b.UserID).Updates(Booking{Status: b.Status, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(&Booking{}).Where("id = ?", pid).UpdateColumns(Booking{Status: b.Status, UpdatedAt: time.Now()}).Error
 	if err != nil {
 		return &Booking{}, err
 	}
+
 	if b.ID != 0 {
 		err = db.Debug().Model(&User{}).Where("id = ?", b.UserID).Take(&b.User).Error
 		if err != nil {

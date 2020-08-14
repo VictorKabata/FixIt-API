@@ -24,9 +24,12 @@ type Post struct {
 	Category    string    `gorm:"size:30;not null;" json:"category"`
 	ImageURL    string    `gorm:"size:255;not null;" json:"image_url"`
 	Budget      string    `gorm:"size:30;not null;" json:"budget"`
-	Completed   bool      `gorm:"size:255;not null;" json:"completed"`
+	Status      string    `gorm:"size:255;not null;" json:"status"`
 	Latitude    float32   `gorm:"not null" json:"latitude"`
 	Longitude   float32   `gorm:"not null" json:"longitude"`
+	Address     string    `gorm:"size:255;not null" json:"address"`
+	Region      string    `gorm:"size:255;not null" json:"region"`
+	Country     string    `gorm:"size:255;not null" json:"country"`
 	User        User      `json:"user"`
 	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
@@ -37,7 +40,10 @@ func (p *Post) Prepare() {
 	p.Description = html.EscapeString(strings.TrimSpace(p.Description))
 	p.Category = html.EscapeString(strings.TrimSpace(p.Category))
 	p.ImageURL = html.EscapeString(strings.TrimSpace(p.ImageURL))
-	p.Completed = false
+	p.Status = html.EscapeString(strings.TrimSpace(p.Status))
+	p.Address = html.EscapeString(strings.TrimSpace(p.Address))
+	p.Region = html.EscapeString(strings.TrimSpace(p.Region))
+	p.Country = html.EscapeString(strings.TrimSpace(p.Country))
 	p.User = User{}
 	p.CreatedAt = time.Now()
 	p.UpdatedAt = time.Now()
@@ -53,9 +59,9 @@ func (p *Post) Validate() error {
 	if p.UserID < 1 {
 		return errors.New("Required User ID")
 	}
-	// if p.ImageURL == "" {
-	// 	return errors.New("Required Image")
-	// }
+	if p.ImageURL == "" {
+		return errors.New("Required Image")
+	}
 	return nil
 }
 
@@ -117,7 +123,7 @@ func (p *Post) UpdateAPost(db *gorm.DB) (*Post, error) {
 
 	var err error
 
-	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{Description: p.Description, Category: p.Category, Budget: p.Budget, Completed: p.Completed, ImageURL: p.ImageURL, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{Description: p.Description, Category: p.Category, Budget: p.Budget, Status: p.Status, Address: p.Address, Region: p.Region, Country: p.Country, Latitude: p.Latitude, Longitude: p.Longitude, ImageURL: p.ImageURL, UpdatedAt: time.Now()}).Error
 	if err != nil {
 		return &Post{}, err
 	}

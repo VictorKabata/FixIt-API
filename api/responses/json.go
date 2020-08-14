@@ -41,6 +41,9 @@ func PrepareResponse(user *models.User) map[string]interface{} {
 		Specialisation: user.Specialisation,
 		Latitude:       user.Latitude,
 		Longitude:      user.Longitude,
+		Address:        user.Address,
+		Region:         user.Region,
+		Country:        user.Country,
 		Token:          token,
 	}
 

@@ -30,6 +30,9 @@ type User struct {
 	Specialisation string    `gorm:"size:255;not null" json:"specialisation"`
 	Latitude       float32   `gorm:"size:255;not null" json:"latitude"`
 	Longitude      float32   `gorm:"size:255;not null" json:"longitude"`
+	Address        string    `gorm:"size:255;not null" json:"address"`
+	Region         string    `gorm:"size:255;not null" json:"region"`
+	Country        string    `gorm:"size:255;not null" json:"country"`
 	Password       string    `gorm:"size:100;not null" json:"password"`
 	CreatedAt      time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt      time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
@@ -47,6 +50,9 @@ type ResponseUser struct {
 	Specialisation string  `json:"specialisation"`
 	Latitude       float32 `json:"latitude"`
 	Longitude      float32 `json:"longitude"`
+	Address        string  `json:"address"`
+	Region         string  `json:"region"`
+	Country        string  `json:"country"`
 	Token          string  `json:"token"`
 
 	//Reviews        Review
@@ -187,6 +193,7 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
 			"username":       u.Username,
@@ -196,6 +203,9 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 			"specialisation": u.Specialisation,
 			"latitude":       u.Latitude,
 			"longitude":      u.Longitude,
+			"address":        u.Address,
+			"region":         u.Region,
+			"country":        u.Country,
 			"password":       u.Password,
 			"updated_at":     time.Now(),
 		},
