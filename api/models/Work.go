@@ -1,9 +1,73 @@
 package models
 
+import (
+	"errors"
+	"time"
+
+	"github.com/jinzhu/gorm"
+)
+
 type Work struct {
-	ID       uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	UserID   uint32 `gorm:"not null" json:"user_id"`
-	WorkerID uint32 `gorm:"not null" json:"user_id"`
-	PostID   uint32 `gorm:"not null" json:"post_id"`
-	Status   string `gorm:"not null" json:"status"`
+	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	UserID    uint32    `gorm:"not null" json:"user_id"`
+	WorkerID  uint32    `gorm:"not null" json:"worker_id"`
+	PostID    uint32    `gorm:"not null" json:"post_id"`
+	User      User      `json:"user"`
+	Worker    User      `json:"worker"`
+	Post      Post      `json:"post"`
+	Status    string    `gorm:"not null" json:"status"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+}
+
+func (w *Work) Prepare() {
+	w.ID = 0
+	w.User = User{}
+	w.Worker = User{}
+	w.Post = Post{}
+	w.Status = "In-Progress"
+	w.CreatedAt = time.Now()
+	w.UpdatedAt = time.Now()
+}
+
+func (w *Work) Validate() error {
+	if w.UserID < 1 {
+		return errors.New("Required User ID")
+	}
+	if w.WorkerID < 1 {
+		return errors.New("Required Worker ID")
+	}
+	if w.PostID < 1 {
+		return errors.New("Required Post ID")
+	}
+	if w.Status == "" {
+		return errors.New("Required Status")
+	}
+	return nil
+}
+
+func (w *Work) FindWorkByID(db *gorm.DB, pid uint64) (*Work, error) {
+	var err error
+	err = db.Debug().Model(&Work{}).Where("id = ?", pid).Take(&p).Error
+	if err != nil {
+		return &Post{}, err
+	}
+	if p.ID != 0 {
+		err = db.Debug().Model(&User{}).Where("id = ?", w.UserID).Take(&w.User).Error
+		if err != nil {
+			return &Work{}, err
+		}
+
+		err = db.Debug().Model(&User{}).Where("id = ?", w.WorkerID).Take(&w.Worker).Error
+		if err != nil {
+			return &Work{}, err
+		}
+
+		err = db.Debug().Model(&Post{}).Where("id = ?", w.Post).Take(&w.Post).Error
+		if err != nil {
+			return &Work{}, err
+		}
+	}
+
+	return p, nil
 }
