@@ -78,7 +78,7 @@ func (w *Work) UploadWork(db *gorm.DB) (*Work, error) {
 func (w *Work) FindWorkByID(db *gorm.DB, pid uint64) (*Work, error) {
 	var err error
 
-	err = db.Debug().Model(&Work{}).Where("id = ?", pid).Take(&w).Error
+	err = db.Debug().Model(&Work{}).Where("post_id = ?", pid).Take(&w).Error
 	if err != nil {
 		return &Work{}, err
 	}
