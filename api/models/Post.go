@@ -20,6 +20,7 @@ import (
 type Post struct {
 	ID          uint64    `gorm:"primary_key;auto_increment" json:"id"`
 	UserID      uint32    `gorm:"not null" json:"user_id"`
+	WorkerID    uint32    `gorm:"not null" json:"worker_id"`
 	Description string    `gorm:"size:255;not null;unique" json:"description"`
 	Category    string    `gorm:"size:30;not null;" json:"category"`
 	ImageURL    string    `gorm:"size:255;not null;" json:"image_url"`
@@ -123,7 +124,7 @@ func (p *Post) UpdateAPost(db *gorm.DB) (*Post, error) {
 
 	var err error
 
-	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{Description: p.Description, Category: p.Category, Budget: p.Budget, Status: p.Status, Address: p.Address, Region: p.Region, Country: p.Country, Latitude: p.Latitude, Longitude: p.Longitude, ImageURL: p.ImageURL, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{WorkerID: p.WorkerID, Description: p.Description, Category: p.Category, Budget: p.Budget, Status: p.Status, Address: p.Address, Region: p.Region, Country: p.Country, Latitude: p.Latitude, Longitude: p.Longitude, ImageURL: p.ImageURL, UpdatedAt: time.Now()}).Error
 	if err != nil {
 		return &Post{}, err
 	}
