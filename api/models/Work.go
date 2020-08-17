@@ -48,11 +48,13 @@ func (w *Work) Validate() error {
 
 func (w *Work) FindWorkByID(db *gorm.DB, pid uint64) (*Work, error) {
 	var err error
-	err = db.Debug().Model(&Work{}).Where("id = ?", pid).Take(&p).Error
+
+	err = db.Debug().Model(&Work{}).Where("id = ?", pid).Take(&w).Error
 	if err != nil {
-		return &Post{}, err
+		return &Work{}, err
 	}
-	if p.ID != 0 {
+
+	if w.ID != 0 {
 		err = db.Debug().Model(&User{}).Where("id = ?", w.UserID).Take(&w.User).Error
 		if err != nil {
 			return &Work{}, err
@@ -69,5 +71,35 @@ func (w *Work) FindWorkByID(db *gorm.DB, pid uint64) (*Work, error) {
 		}
 	}
 
-	return p, nil
+	return w, nil
+}
+
+//Update an existing work
+func (w *Work) UpdateWork(db *gorm.DB) (*Work, error) {
+
+	var err error
+
+	err = db.Debug().Model(&Work{}).Where("id = ?", w.ID).Updates(Work{Status: w.Status, UpdatedAt: time.Now()}).Error
+	if err != nil {
+		return &Work{}, err
+	}
+
+	if w.ID != 0 {
+		err = db.Debug().Model(&User{}).Where("id = ?", w.UserID).Take(&w.User).Error
+		if err != nil {
+			return &Work{}, err
+		}
+
+		err = db.Debug().Model(&User{}).Where("id = ?", w.WorkerID).Take(&w.Worker).Error
+		if err != nil {
+			return &Work{}, err
+		}
+
+		err = db.Debug().Model(&Post{}).Where("id = ?", w.Post).Take(&w.Post).Error
+		if err != nil {
+			return &Work{}, err
+		}
+	}
+
+	return w, nil
 }
