@@ -39,4 +39,8 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/booking", middlewares.SetMiddlewareJSON(s.MakeBooking)).Methods("POST")
 	s.Router.HandleFunc("/booking", middlewares.SetMiddlewareJSON(s.GetBookings)).Methods("GET")
 	s.Router.HandleFunc("/booking/{id}", middlewares.SetMiddlewareJSON(s.UpdateBooking)).Methods("PUT")
+
+	//Work routes
+	s.Router.HandleFunc("/work", middlewares.SetMiddlewareJSON(s.CreateWork)).Methods("POST")
+	s.Router.HandleFunc("/work", middlewares.SetMiddlewareJSON(s.GetWork)).Methods("GET")
 }

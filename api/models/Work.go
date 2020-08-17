@@ -46,6 +46,35 @@ func (w *Work) Validate() error {
 	return nil
 }
 
+//Upload a new work
+func (w *Work) UploadWork(db *gorm.DB) (*Work, error) {
+	var err error
+	err = db.Debug().Model(&Work{}).Create(&w).Error
+	if err != nil {
+		return &Work{}, err
+	}
+
+	if w.ID != 0 {
+		err = db.Debug().Model(&User{}).Where("id = ?", w.UserID).Take(&w.User).Error
+		if err != nil {
+			return &Work{}, err
+		}
+
+		err = db.Debug().Model(&User{}).Where("id = ?", w.WorkerID).Take(&w.Worker).Error
+		if err != nil {
+			return &Work{}, err
+		}
+
+		err = db.Debug().Model(&Post{}).Where("id = ?", w.Post).Take(&w.Post).Error
+		if err != nil {
+			return &Work{}, err
+		}
+	}
+
+	return w, nil
+}
+
+//Get work for a particular post.
 func (w *Work) FindWorkByID(db *gorm.DB, pid uint64) (*Work, error) {
 	var err error
 
