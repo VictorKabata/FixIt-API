@@ -65,7 +65,7 @@ func (w *Work) UploadWork(db *gorm.DB) (*Work, error) {
 			return &Work{}, err
 		}
 
-		err = db.Debug().Model(&Post{}).Where("id = ?", w.Post).Take(&w.Post).Error
+		err = db.Debug().Model(&Post{}).Where("id = ?", w.PostID).Take(&w.Post).Error
 		if err != nil {
 			return &Work{}, err
 		}
@@ -94,7 +94,7 @@ func (w *Work) FindWorkByID(db *gorm.DB, pid uint64) (*Work, error) {
 			return &Work{}, err
 		}
 
-		err = db.Debug().Model(&Post{}).Where("id = ?", w.Post).Take(&w.Post).Error
+		err = db.Debug().Model(&Post{}).Where("id = ?", w.PostID).Take(&w.Post).Error
 		if err != nil {
 			return &Work{}, err
 		}
@@ -124,7 +124,7 @@ func (w *Work) UpdateWork(db *gorm.DB) (*Work, error) {
 			return &Work{}, err
 		}
 
-		err = db.Debug().Model(&Post{}).Where("id = ?", w.Post).Take(&w.Post).Error
+		err = db.Debug().Model(&Post{}).Where("id = ?", w.PostID).Take(&w.Post).Error
 		if err != nil {
 			return &Work{}, err
 		}

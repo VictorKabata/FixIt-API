@@ -42,5 +42,5 @@ func (s *Server) initializeRoutes() {
 
 	//Work routes
 	s.Router.HandleFunc("/work", middlewares.SetMiddlewareJSON(s.CreateWork)).Methods("POST")
-	s.Router.HandleFunc("/work", middlewares.SetMiddlewareJSON(s.GetWork)).Methods("GET")
+	s.Router.HandleFunc("/work/{id}", middlewares.SetMiddlewareJSON(s.GetWork)).Methods("GET")
 }
