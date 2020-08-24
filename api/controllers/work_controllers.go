@@ -74,3 +74,48 @@ func (server *Server) GetWork(w http.ResponseWriter, r *http.Request) {
 	}
 	responses.JSON(w, http.StatusOK, workReceived)
 }
+
+func (server *Server) UpdateWork(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+
+	// Check if the post id is valid
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// Check if the post exist
+	work := models.Work{}
+	err = server.DB.Debug().Model(models.Work{}).Where("id = ?", pid).Take(&work).Error
+	if err != nil {
+		responses.ERROR(w, http.StatusNotFound, errors.New("Work not found"))
+		return
+	}
+
+	// Read the data posted
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	// Start processing the request data
+	workUpdate := models.Work{}
+	err = json.Unmarshal(body, &workUpdate)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	workUpdate.ID = work.ID //this is important to tell the model the post id to update, the other update field are set above
+
+	workUpdated, err := workUpdate.UpdateWork(server.DB)
+	if err != nil {
+		formattedError := formaterror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		return
+	}
+	responses.JSON(w, http.StatusOK, workUpdated)
+}
