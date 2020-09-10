@@ -22,7 +22,7 @@ type Post struct {
 	UserID      uint32    `gorm:"not null" json:"user_id"`
 	WorkerID    uint32    `gorm:"not null" json:"worker_id"`
 	Description string    `gorm:"size:255;not null;unique" json:"description"`
-	Category    string    `gorm:"size:30;not null;" json:"category"`
+	Category    string    `gorm:"size:255;not null;" json:"category"`
 	ImageURL    string    `gorm:"size:255;not null;" json:"image_url"`
 	Budget      string    `gorm:"size:30;not null;" json:"budget"`
 	Status      string    `gorm:"size:255;not null;" json:"status"`

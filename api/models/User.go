@@ -26,7 +26,7 @@ type User struct {
 	Username       string    `gorm:"size:255;not null;unique" json:"username"`
 	Email          string    `gorm:"size:100;not null;unique" json:"email"`
 	Phone          string    `gorm:"size:25;not null;unique" json:"phone_number"`
-	ImageURL       string    `gorm:"size:255;not null;unique" json:"image_url"`
+	ImageURL       string    `gorm:"size:255;unique" json:"image_url"`
 	Specialisation string    `gorm:"size:255;not null" json:"specialisation"`
 	Latitude       float32   `gorm:"size:255;not null" json:"latitude"`
 	Longitude      float32   `gorm:"size:255;not null" json:"longitude"`
