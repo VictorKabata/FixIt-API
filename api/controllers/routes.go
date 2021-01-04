@@ -8,7 +8,7 @@ func (s *Server) initializeRoutes() {
 	// Home Route
 	s.Router.HandleFunc("/", middlewares.SetMiddlewareJSON(s.Home)).Methods("GET")
 
-	//Login Route
+	//Register Route
 	s.Router.HandleFunc("/register", middlewares.SetMiddlewareJSON(s.CreateUser)).Methods("POST")
 
 	// Login Route
@@ -43,4 +43,10 @@ func (s *Server) initializeRoutes() {
 	//Work routes
 	s.Router.HandleFunc("/work", middlewares.SetMiddlewareJSON(s.CreateWork)).Methods("POST")
 	s.Router.HandleFunc("/work/{id}", middlewares.SetMiddlewareJSON(s.GetWork)).Methods("GET")
+
+	//Review routes
+	s.Router.HandleFunc("/review", middlewares.SetMiddlewareJSON(s.GetReviews)).Methods("GET")
+	s.Router.HandleFunc("/review", middlewares.SetMiddlewareJSON(s.CreateReview)).Methods("POST")
+	s.Router.HandleFunc("/review/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateReview))).Methods("PUT")
+	s.Router.HandleFunc("/review/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteReview)).Methods("DELETE")
 }

@@ -233,7 +233,7 @@ func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
 }
 
 func UploadProfilePicToS3(path string, s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
-	urlLink := "https://vickikbt-fixit.s3.us-east-2.amazonaws.com/"
+	urlLink := "https://vickikbt-fixit-app.s3.us-east-2.amazonaws.com/"
 
 	size := fileHeader.Size
 	buffer := make([]byte, size)
@@ -243,9 +243,9 @@ func UploadProfilePicToS3(path string, s *session.Session, file multipart.File, 
 	tempFileName := path + "/" + bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
 
 	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
-		Bucket:               aws.String("vickikbt-fixit"), //Bucket name
-		Key:                  aws.String(tempFileName),     //File name
-		ACL:                  aws.String("public-read"),    // Access type- public
+		Bucket:               aws.String("vickikbt-fixit-app"), //Bucket name
+		Key:                  aws.String(tempFileName),         //File name
+		ACL:                  aws.String("public-read"),        // Access type- public
 		Body:                 bytes.NewReader(buffer),
 		ContentLength:        aws.Int64(int64(size)),
 		ContentType:          aws.String(http.DetectContentType(buffer)),

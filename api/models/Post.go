@@ -104,6 +104,7 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 	return &posts, nil
 }
 
+//Return all post from specific user
 func (p *Post) FindPostByID(db *gorm.DB, pid uint64) (*Post, error) {
 	var err error
 	err = db.Debug().Model(&Post{}).Where("id = ?", pid).Take(&p).Error
@@ -151,8 +152,9 @@ func (p *Post) DeleteAPost(db *gorm.DB, pid uint64, uid uint32) (int64, error) {
 	return db.RowsAffected, nil
 }
 
+//Upload an post image to AWS S3
 func UploadPostPicToS3(path string, s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (string, error) {
-	urlLink := "https://vickikbt-fixit.s3.us-east-2.amazonaws.com/"
+	urlLink := "https://vickikbt-fixit-app.s3.us-east-2.amazonaws.com/"
 
 	size := fileHeader.Size
 	buffer := make([]byte, size)
@@ -162,9 +164,9 @@ func UploadPostPicToS3(path string, s *session.Session, file multipart.File, fil
 	tempFileName := path + "/" + bson.NewObjectId().Hex() + filepath.Ext(fileHeader.Filename)
 
 	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
-		Bucket:               aws.String("vickikbt-fixit"), //Bucket name
-		Key:                  aws.String(tempFileName),     //File name
-		ACL:                  aws.String("public-read"),    // Access type- public
+		Bucket:               aws.String("vickikbt-fixit-app"), //Bucket name
+		Key:                  aws.String(tempFileName),         //File name
+		ACL:                  aws.String("public-read"),        // Access type- public
 		Body:                 bytes.NewReader(buffer),
 		ContentLength:        aws.Int64(int64(size)),
 		ContentType:          aws.String(http.DetectContentType(buffer)),
@@ -179,6 +181,7 @@ func UploadPostPicToS3(path string, s *session.Session, file multipart.File, fil
 	return urlLink + tempFileName, err
 }
 
+//Find booking of a post
 func (b *Booking) FindPostBookings(db *gorm.DB, pid uint64) (*[]Booking, error) {
 	var err error
 

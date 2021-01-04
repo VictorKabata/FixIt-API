@@ -19,6 +19,7 @@ import (
 	"github.com/victorkabata/FixIt-API/api/utils/formaterror"
 )
 
+//Controller to create new post
 func (server *Server) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -38,6 +39,7 @@ func (server *Server) CreatePost(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
 		return
 	}
+
 	uid, err := auth.ExtractTokenID(r)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
@@ -57,6 +59,7 @@ func (server *Server) CreatePost(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusCreated, postCreated)
 }
 
+//Controller to get all posts
 func (server *Server) GetPosts(w http.ResponseWriter, r *http.Request) {
 
 	post := models.Post{}
@@ -69,6 +72,7 @@ func (server *Server) GetPosts(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, posts)
 }
 
+//Controller to get a specific post
 func (server *Server) GetPost(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -87,6 +91,7 @@ func (server *Server) GetPost(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, postReceived)
 }
 
+//Controller to update existing post
 func (server *Server) UpdatePost(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -157,6 +162,7 @@ func (server *Server) UpdatePost(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, postUpdated)
 }
 
+//Controller to delete post
 func (server *Server) DeletePost(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -202,6 +208,7 @@ func (server *Server) DeletePost(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusNoContent, response)
 }
 
+//Controller to upload post image to AWS S3
 func UploadPostPic(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -228,6 +235,7 @@ func UploadPostPic(w http.ResponseWriter, r *http.Request) {
 			os.Getenv("AWS_SECRET_KEY"), // secret key
 			""),
 	})
+
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 	}
@@ -246,7 +254,7 @@ func UploadPostPic(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//Get all booking made to that post
+////Controller to get all booking made to that post
 func (server *Server) GetPostBooking(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
