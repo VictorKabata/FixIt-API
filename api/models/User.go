@@ -22,22 +22,21 @@ import (
 
 //Model of the user table in database
 type User struct {
-	ID             uint32    `gorm:"primary_key; auto_increment" json:"id"`
-	Username       string    `gorm:"size:255;not null;unique" json:"username"`
-	Email          string    `gorm:"size:100;not null;unique" json:"email"`
-	Phone          string    `gorm:"size:25;not null;unique" json:"phone_number"`
-	ImageURL       string    `gorm:"size:255;unique" json:"image_url"`
-	Specialisation string    `gorm:"size:255;not null" json:"specialisation"`
-	Latitude       float32   `gorm:"size:255;not null" json:"latitude"`
-	Longitude      float32   `gorm:"size:255;not null" json:"longitude"`
-	Address        string    `gorm:"size:255;not null" json:"address"`
-	Region         string    `gorm:"size:255;not null" json:"region"`
-	Country        string    `gorm:"size:255;not null" json:"country"`
-	Password       string    `gorm:"size:100;not null" json:"password"`
-	CreatedAt      time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt      time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-
-	//Reviews        Review
+	ID             uint32  `gorm:"primary_key; auto_increment" json:"id"`
+	Username       string  `gorm:"size:255;not null;unique" json:"username"`
+	Email          string  `gorm:"size:100;not null;unique" json:"email"`
+	Phone          string  `gorm:"size:25;not null;unique" json:"phone_number"`
+	ImageURL       string  `gorm:"size:255;unique" json:"image_url"`
+	Specialisation string  `gorm:"size:255;not null" json:"specialisation"`
+	Latitude       float32 `gorm:"size:255;not null" json:"latitude"`
+	Longitude      float32 `gorm:"size:255;not null" json:"longitude"`
+	Address        string  `gorm:"size:255;not null" json:"address"`
+	Region         string  `gorm:"size:255;not null" json:"region"`
+	Country        string  `gorm:"size:255;not null" json:"country"`
+	//Review         []Review  `json:"reviews"`
+	Password  string    `gorm:"size:100;not null" json:"password"`
+	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 //Model the response of user-related endpoints
@@ -54,8 +53,7 @@ type ResponseUser struct {
 	Region         string  `json:"region"`
 	Country        string  `json:"country"`
 	Token          string  `json:"token"`
-
-	//Reviews        Review
+	//Review         Review  `json:"reviews"`
 }
 
 //Encrypt password
@@ -78,6 +76,7 @@ func (u *User) BeforeSave() error {
 	return nil
 }
 
+//User input formatting
 func (u *User) Prepare() {
 	u.ID = 0
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
@@ -164,11 +163,23 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 //Get all users
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
+
 	users := []User{}
+
 	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
 	if err != nil {
 		return &[]User{}, err
 	}
+
+	// if len(users) > 0 {
+	// 	for i, _ := range users {
+	// 		err := db.Debug().Model(&Review{}).Where("user_id=?", users[i].ID).Take(&users[i].Review).Error
+	// 		if err != nil {
+	// 			return &[]User{}, err
+	// 		}
+	// 	}
+	// }
+
 	return &users, err
 }
 

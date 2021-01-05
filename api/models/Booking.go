@@ -12,7 +12,7 @@ type Booking struct {
 	ID     uint32 `gorm:"primary_key;auto_increment" json:"id"`
 	UserID uint32 `gorm:"not null" json:"user_id"`
 	PostID uint32 `gorm:"not null" json:"post_id"`
-	//Description string    `gorm:"not null" json:"description"`
+	//Comment string    `gorm:"not null" json:"description"`
 	//Budget      string    `gorm:"not null" json:"budget"`
 	Status    string    `gorm:"not null" json:"status"`
 	User      User      `json:"user"`

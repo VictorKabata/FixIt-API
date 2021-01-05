@@ -71,6 +71,26 @@ func (server *Server) GetReviews(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, reviews)
 }
 
+//Controller to get specific user's reviews
+func (server *Server) GetUserReviews(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	review := models.Review{}
+
+	reviewsRecieved, err := review.FindUserReviews(server.DB, pid)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, reviewsRecieved)
+}
+
 //Controller to update existing review
 func (server *Server) UpdateReview(w http.ResponseWriter, r *http.Request) {
 

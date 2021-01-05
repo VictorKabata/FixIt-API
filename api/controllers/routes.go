@@ -46,6 +46,7 @@ func (s *Server) initializeRoutes() {
 
 	//Review routes
 	s.Router.HandleFunc("/review", middlewares.SetMiddlewareJSON(s.GetReviews)).Methods("GET")
+	s.Router.HandleFunc("/review/{id}", middlewares.SetMiddlewareJSON(s.GetUserReviews)).Methods("GET")
 	s.Router.HandleFunc("/review", middlewares.SetMiddlewareJSON(s.CreateReview)).Methods("POST")
 	s.Router.HandleFunc("/review/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateReview))).Methods("PUT")
 	s.Router.HandleFunc("/review/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteReview)).Methods("DELETE")

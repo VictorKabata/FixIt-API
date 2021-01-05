@@ -14,7 +14,7 @@ type Review struct {
 	UserID    uint32    `gorm:"not null;unique" json:"user_id"`
 	WorkerID  uint32    `gorm:"not null;unique" json:"worker_id"`
 	User      User      `json:"user"`
-	Rating    int       `gorm:"not null" json:"rating"`
+	Rating    uint32    `gorm:"not null" json:"rating"`
 	Comment   string    `gorm:"not null" json:"comment"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
@@ -23,7 +23,7 @@ type Review struct {
 func (r *Review) Prepare() {
 	r.ID = 0
 	r.User = User{}
-	r.Rating = 0
+	//r.Rating = 0
 	r.Comment = html.EscapeString(strings.TrimSpace(r.Comment))
 	r.CreatedAt = time.Now()
 	r.UpdatedAt = time.Now()
@@ -85,21 +85,26 @@ func (r *Review) FindAllReviews(db *gorm.DB) (*[]Review, error) {
 }
 
 //Return all reviews for specific user
-// func (r *Review) FindReviewsByID(db *gorm.DB, pid uint64) (*Review, error) {
-// 	var err error
-// 	err = db.Debug().Model(&Review{}).Where("id=?", pid).Take(&r).Error
-// 	if err != nil {
-// 		return &Review{}, err
-// 	}
+func (r *Review) FindUserReviews(db *gorm.DB, pid uint64) (*[]Review, error) {
+	var err error
 
-// 	if r.ID != 0 {
-// 		err = db.Debug().Model(&User{}).Where("id=?", r.UserID).Take(&r.User).Error
-// 		if err != nil {
-// 			return &Review{}, err
-// 		}
-// 	}
-// 	return r, nil
-// }
+	reviews := []Review{}
+
+	err = db.Debug().Model(&Review{}).Limit(100).Where("user_id=?", pid).Find(&reviews).Error
+	if err != nil {
+		return &[]Review{}, err
+	}
+
+	if len(reviews) > 0 {
+		for i, _ := range reviews {
+			err := db.Debug().Model(&User{}).Where("id=?", reviews[i].UserID).Take(&reviews[i].User).Error
+			if err != nil {
+				return &[]Review{}, err
+			}
+		}
+	}
+	return &reviews, nil
+}
 
 //Update an existing review
 func (r *Review) UpdateReview(db *gorm.DB) (*Review, error) {
