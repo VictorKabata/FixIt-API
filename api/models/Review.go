@@ -87,6 +87,7 @@ func (r *Review) FindAllReviews(db *gorm.DB) (*[]Review, error) {
 //Return all reviews for specific user
 func (r *Review) FindUserReviews(db *gorm.DB, pid uint64) (*[]Review, error) {
 	var err error
+	//var ratings uint32
 
 	reviews := []Review{}
 
@@ -99,6 +100,8 @@ func (r *Review) FindUserReviews(db *gorm.DB, pid uint64) (*[]Review, error) {
 		for i, _ := range reviews {
 			err := db.Debug().Model(&User{}).Where("id=?", reviews[i].UserID).Take(&reviews[i].User).Error
 			if err != nil {
+				//ratings += reviews[i].Rating
+				//fmt.Println(ratings)
 				return &[]Review{}, err
 			}
 		}

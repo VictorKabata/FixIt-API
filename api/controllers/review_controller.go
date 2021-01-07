@@ -75,6 +75,7 @@ func (server *Server) GetReviews(w http.ResponseWriter, r *http.Request) {
 func (server *Server) GetUserReviews(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
+
 	pid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
