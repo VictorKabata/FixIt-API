@@ -3,17 +3,19 @@ package models
 import (
 	"errors"
 	"fmt"
+	"html"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
 )
 
 type Booking struct {
-	ID     uint32 `gorm:"primary_key;auto_increment" json:"id"`
-	UserID uint32 `gorm:"not null" json:"user_id"`
-	PostID uint32 `gorm:"not null" json:"post_id"`
-	//Comment string    `gorm:"not null" json:"description"`
-	//Budget      string    `gorm:"not null" json:"budget"`
+	ID        uint32    `gorm:"primary_key;auto_increment" json:"id"`
+	UserID    uint32    `gorm:"not null" json:"user_id"`
+	PostID    uint32    `gorm:"not null" json:"post_id"`
+	Comment   string    `gorm:"not null" json:"comment"`
+	Bid       string    `gorm:"not null" json:"bid"`
 	Status    string    `gorm:"not null" json:"status"`
 	User      User      `json:"user"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
@@ -22,8 +24,8 @@ type Booking struct {
 
 func (b *Booking) Prepare() {
 	b.ID = 0
-	//b.Description = html.EscapeString(strings.TrimSpace(b.Description))
-	//b.Budget = html.EscapeString(strings.TrimSpace(b.Budget))
+	b.Comment = html.EscapeString(strings.TrimSpace(b.Comment))
+	b.Bid = html.EscapeString(strings.TrimSpace(b.Bid))
 	b.Status = "Pending"
 	b.User = User{}
 	b.CreatedAt = time.Now()
@@ -32,12 +34,12 @@ func (b *Booking) Prepare() {
 
 func (b *Booking) Validate() error {
 
-	// if b.Description == "" {
-	// 	return errors.New("Required Description")
-	// }
-	// if b.Budget == "" {
-	// 	return errors.New("Required Budget")
-	// }
+	if b.Comment == "" {
+		return errors.New("Required Comment")
+	}
+	if b.Bid == "" {
+		return errors.New("Required Bid")
+	}
 	if b.UserID < 1 {
 		return errors.New("Required User ID")
 	}
