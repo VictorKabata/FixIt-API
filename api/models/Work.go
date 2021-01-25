@@ -153,6 +153,13 @@ func (w *Work) FindUserWorks(db *gorm.DB, pid uint64) (*[]Work, error) {
 			}
 
 			for i, _ := range work {
+				err := db.Debug().Model(&User{}).Where("id = ?", work[i].UserID).Take(&work[i].User).Error
+				if err != nil {
+					return &[]Work{}, err
+				}
+			}
+
+			for i, _ := range work {
 				err := db.Debug().Model(&User{}).Where("id = ?", work[i].WorkerID).Take(&work[i].Worker).Error
 				if err != nil {
 					return &[]Work{}, err
@@ -160,7 +167,7 @@ func (w *Work) FindUserWorks(db *gorm.DB, pid uint64) (*[]Work, error) {
 			}
 
 			for i, _ := range work {
-				err := db.Debug().Model(&User{}).Where("id = ?", work[i].UserID).Take(&work[i].User).Error
+				err := db.Debug().Model(&Post{}).Where("id = ?", work[i].PostID).Take(&work[i].Post).Error
 				if err != nil {
 					return &[]Work{}, err
 				}
