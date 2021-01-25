@@ -212,3 +212,34 @@ func (b *Booking) FindPostBookings(db *gorm.DB, pid uint64) (*[]Booking, error) 
 
 	return &booking, err
 }
+
+func (p *Post) FindUserPosts(db *gorm.DB, pid uint64) (*[]Post, error) {
+	var err error
+
+	post := []Post{}
+
+	err = db.Debug().Model(&Post{}).Limit(100).Find(&post).Error
+	if err != nil {
+		return &[]Post{}, err
+	}
+
+	if len(post) > 0 {
+
+		for i := 0; i <= len(post); i++ {
+			err = db.Debug().Model(&Post{}).Limit(100).Where("user_id = ?", pid).Find(&post).Error
+			if err != nil {
+				return &[]Post{}, err
+			}
+		}
+
+		for i, _ := range post {
+			err := db.Debug().Model(&User{}).Where("id = ?", post[i].UserID).Take(&post[i].User).Error
+			if err != nil {
+				return &[]Post{}, err
+			}
+		}
+
+	}
+
+	return &post, err
+}

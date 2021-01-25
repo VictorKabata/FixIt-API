@@ -132,3 +132,43 @@ func (w *Work) UpdateWork(db *gorm.DB) (*Work, error) {
 
 	return w, nil
 }
+
+//Find work based on user id
+func (w *Work) FindUserWorks(db *gorm.DB, pid uint64) (*[]Work, error) {
+	var err error
+
+	work := []Work{}
+
+	err = db.Debug().Model(&Work{}).Limit(100).Find(&work).Error
+	if err != nil {
+		return &[]Work{}, err
+	}
+
+	if len(work) > 0 {
+
+		for i := 0; i <= len(work); i++ {
+			err = db.Debug().Model(&Work{}).Limit(100).Where("worker_id = ?", pid).Find(&work).Error
+			if err != nil {
+				return &[]Work{}, err
+			}
+
+			for i, _ := range work {
+				err := db.Debug().Model(&User{}).Where("id = ?", work[i].WorkerID).Take(&work[i].Worker).Error
+				if err != nil {
+					return &[]Work{}, err
+				}
+			}
+
+			for i, _ := range work {
+				err := db.Debug().Model(&User{}).Where("id = ?", work[i].UserID).Take(&work[i].User).Error
+				if err != nil {
+					return &[]Work{}, err
+				}
+			}
+
+		}
+
+	}
+
+	return &work, err
+}

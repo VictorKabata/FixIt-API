@@ -256,7 +256,7 @@ func UploadPostPic(w http.ResponseWriter, r *http.Request) {
 
 }
 
-////Controller to get all booking made to that post
+//Controller to get all booking made to that post
 func (server *Server) GetPostBooking(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -274,4 +274,23 @@ func (server *Server) GetPostBooking(w http.ResponseWriter, r *http.Request) {
 	}
 
 	responses.JSON(w, http.StatusOK, postBookings)
+}
+
+//Controller to get user's posts
+func (server *Server) GetUserPosts(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	post := models.Post{}
+
+	userPosts, err := post.FindUserPosts(server.DB, pid)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, userPosts)
 }

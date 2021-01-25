@@ -119,3 +119,22 @@ func (server *Server) UpdateWork(w http.ResponseWriter, r *http.Request) {
 	}
 	responses.JSON(w, http.StatusOK, workUpdated)
 }
+
+//Controller to get user's works
+func (server *Server) GetUserWorks(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	work := models.Work{}
+
+	userWorks, err := work.FindUserWorks(server.DB, pid)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, userWorks)
+}

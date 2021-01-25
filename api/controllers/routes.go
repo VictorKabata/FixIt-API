@@ -33,6 +33,8 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/post/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdatePost))).Methods("PUT")
 	s.Router.HandleFunc("/posts/{id}", middlewares.SetMiddlewareAuthentication(s.DeletePost)).Methods("DELETE")
 
+	s.Router.HandleFunc("/posts/user/{id}", middlewares.SetMiddlewareJSON(s.GetUserPosts)).Methods("GET")
+
 	s.Router.HandleFunc("/posts/booking/{id}", middlewares.SetMiddlewareJSON(s.GetPostBooking)).Methods("GET")
 
 	//Bookings routes
@@ -43,6 +45,7 @@ func (s *Server) initializeRoutes() {
 	//Work routes
 	s.Router.HandleFunc("/work", middlewares.SetMiddlewareJSON(s.CreateWork)).Methods("POST")
 	s.Router.HandleFunc("/work/{id}", middlewares.SetMiddlewareJSON(s.GetWork)).Methods("GET")
+	s.Router.HandleFunc("/work/user/{id}", middlewares.SetMiddlewareJSON(s.GetUserWorks)).Methods("GET")
 
 	//Review routes
 	s.Router.HandleFunc("/review", middlewares.SetMiddlewareJSON(s.GetReviews)).Methods("GET")
