@@ -93,7 +93,7 @@ func (b *Booking) UpdateABooking(db *gorm.DB, pid uint64) (*Booking, error) {
 
 	var err error
 
-	err = db.Debug().Model(&Booking{}).Where("id = ?", pid).UpdateColumns(Booking{Comment: b.Comment, Status: b.Status, UpdatedAt: time.Now()}).Error
+	err = db.Debug().Model(&Booking{}).Where("id = ?", pid).UpdateColumns(Booking{Status: b.Status, UpdatedAt: time.Now()}).Error
 	if err != nil {
 		return &Booking{}, err
 	}
