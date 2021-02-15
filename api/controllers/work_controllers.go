@@ -86,7 +86,7 @@ func (server *Server) UpdateWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check if the post exist
+	// Check if the work exist
 	work := models.Work{}
 	err = server.DB.Debug().Model(models.Work{}).Where("id = ?", pid).Take(&work).Error
 	if err != nil {
@@ -94,7 +94,7 @@ func (server *Server) UpdateWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Read the data posted
+	// Read the data posted in json body
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)

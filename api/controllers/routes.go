@@ -45,6 +45,7 @@ func (s *Server) initializeRoutes() {
 	//Work routes
 	s.Router.HandleFunc("/work", middlewares.SetMiddlewareJSON(s.CreateWork)).Methods("POST")
 	s.Router.HandleFunc("/work/{id}", middlewares.SetMiddlewareJSON(s.GetWork)).Methods("GET")
+	s.Router.HandleFunc("/work/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareJSON(s.UpdateWork))).Methods("PUT")
 	s.Router.HandleFunc("/work/user/{id}", middlewares.SetMiddlewareJSON(s.GetUserWorks)).Methods("GET")
 
 	//Review routes
