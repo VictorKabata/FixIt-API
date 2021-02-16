@@ -109,6 +109,7 @@ func (server *Server) UpdateWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//TODO: Fix date time format
 	//workUpdate.Prepare()
 	// err = workUpdate.Validate()
 	// if err != nil {
