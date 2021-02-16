@@ -125,6 +125,7 @@ func (server *Server) UpdatePost(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
+
 	// Read the data posted
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
