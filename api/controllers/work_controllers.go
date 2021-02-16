@@ -79,7 +79,7 @@ func (server *Server) UpdateWork(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 
-	// Check if the post id is valid
+	// Check if the review id is valid
 	pid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
@@ -94,7 +94,7 @@ func (server *Server) UpdateWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Read the data posted in json body
+	// Read the data posted
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -109,7 +109,14 @@ func (server *Server) UpdateWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	workUpdate.ID = work.ID //this is important to tell the model the post id to update, the other update field are set above
+	//workUpdate.Prepare()
+	// err = workUpdate.Validate()
+	// if err != nil {
+	// 	responses.ERROR(w, http.StatusUnprocessableEntity, err)
+	// 	return
+	// }
+
+	workUpdate.ID = work.ID //this is important to tell the model the trbiew id to update, the other update field are set above
 
 	workUpdated, err := workUpdate.UpdateWork(server.DB)
 	if err != nil {
