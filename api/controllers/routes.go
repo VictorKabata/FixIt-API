@@ -59,5 +59,5 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/transactions", middlewares.SetMiddlewareJSON(s.CreateTransaction)).Methods("POST")
 	s.Router.HandleFunc("/transactions", middlewares.SetMiddlewareJSON(s.GetTransactions)).Methods("GET")
 	s.Router.HandleFunc("/transaction/{id}", middlewares.SetMiddlewareJSON(s.GetTransaction)).Methods("GET")
-	s.Router.HandleFunc("/tranaction/user/{id}", middlewares.SetMiddlewareJSON(s.GetUserTransactions)).Methods("GET")
+	s.Router.HandleFunc("/transaction/user/{id}", middlewares.SetMiddlewareJSON(s.GetUserTransactions)).Methods("GET")
 }

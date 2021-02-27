@@ -165,35 +165,41 @@ func (t *Transaction) FindTransactionByID(db *gorm.DB, pid uint64) (*Transaction
 }
 
 //Return transaction based on user id
-func (t *Transaction) FindTransactionByUserID(db *gorm.DB, pid uint64) (*Transaction, error) {
+func (t *Transaction) FindTransactionByUserID(db *gorm.DB, pid uint64) (*[]Transaction, error) {
 	var err error
 
-	err = db.Debug().Model(&Transaction{}).Where("user_id = ?", pid).Take(&t).Error
+	transactions := []Transaction{}
+
+	err = db.Debug().Model(&Transaction{}).Where("user_id = ?", pid).Limit(100).Find(&transactions).Error
 	if err != nil {
-		return &Transaction{}, err
+		return &[]Transaction{}, err
 	}
 
-	if t.ID != 0 {
-		err = db.Debug().Model(&User{}).Where("id = ?", t.UserID).Take(&t.User).Error
-		if err != nil {
-			return &Transaction{}, err
+	if len(transactions) > 0 {
+		for i, _ := range transactions {
+			err := db.Debug().Model(&User{}).Where("id = ?", transactions[i].UserID).Take(&transactions[i].User).Error
+			if err != nil {
+				return &[]Transaction{}, err
+			}
 		}
-
-		err = db.Debug().Model(&User{}).Where("id = ?", t.WorkerID).Take(&t.Worker).Error
-		if err != nil {
-			return &Transaction{}, err
+		for i, _ := range transactions {
+			err := db.Debug().Model(&User{}).Where("id = ?", transactions[i].WorkerID).Take(&transactions[i].Worker).Error
+			if err != nil {
+				return &[]Transaction{}, err
+			}
 		}
-
-		err = db.Debug().Model(&Post{}).Where("id = ?", t.PostID).Take(&t.Post).Error
-		if err != nil {
-			return &Transaction{}, err
+		for i, _ := range transactions {
+			err := db.Debug().Model(&Post{}).Where("id = ?", transactions[i].PostID).Take(&transactions[i].Post).Error
+			if err != nil {
+				return &[]Transaction{}, err
+			}
 		}
-
-		err = db.Debug().Model(&Work{}).Where("id = ?", t.WorkID).Take(&t.Work).Error
-		if err != nil {
-			return &Transaction{}, err
+		for i, _ := range transactions {
+			err := db.Debug().Model(&Work{}).Where("id = ?", transactions[i].WorkID).Take(&transactions[i].Work).Error
+			if err != nil {
+				return &[]Transaction{}, err
+			}
 		}
 	}
-
-	return t, nil
+	return &transactions, nil
 }
