@@ -11,10 +11,10 @@ import (
 
 type Transaction struct {
 	ID        uint64    `gorm:"primary_key;auto_increment" json:"id"`
-	UserID    uint64    `gorm:"not null" json:"user_id"`
-	WorkerID  uint64    `gorm:"not null" json:"worker_id"`
-	PostID    uint64    `gorm:"not null" json:"post_id"`
-	WorkID    uint64    `gorm:"not null" json:"work_id"`
+	UserID    uint32    `gorm:"not null" json:"user_id"`
+	WorkerID  uint32    `gorm:"not null" json:"worker_id"`
+	PostID    uint32    `gorm:"not null" json:"post_id"`
+	WorkID    uint32    `gorm:"not null" json:"work_id"`
 	Amount    string    `gorm:"not null" json:"amount"`
 	Type      string    `gorm:"not null" json:"type"` //Mpesa or Cash
 	User      User      `json:"user"`

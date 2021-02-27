@@ -32,18 +32,18 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbHost, DbName st
 		}
 	}
 
-	if Dbdriver == "postgres" {
-		DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbUser, DbName, DbPassword)
-		server.DB, err = gorm.Open(Dbdriver, DBURL)
-		if err != nil {
-			fmt.Printf("Cannot connect to %s database\n", Dbdriver)
-			log.Fatal("Error:", err)
-		} else {
-			fmt.Printf("Connected successfully to the %s database\n", Dbdriver)
-		}
-	}
+	// if Dbdriver == "postgres" {
+	// 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbUser, DbName, DbPassword)
+	// 	server.DB, err = gorm.Open(Dbdriver, DBURL)
+	// 	if err != nil {
+	// 		fmt.Printf("Cannot connect to %s database\n", Dbdriver)
+	// 		log.Fatal("Error:", err)
+	// 	} else {
+	// 		fmt.Printf("Connected successfully to the %s database\n", Dbdriver)
+	// 	}
+	// }
 
-	server.DB.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Booking{}, &models.Work{}, &models.Review{}) //database migration
+	server.DB.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Booking{}, &models.Work{}, &models.Review{}, &models.Transaction{}) //database migration
 
 	server.Router = mux.NewRouter()
 
