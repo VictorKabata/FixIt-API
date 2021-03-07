@@ -26,6 +26,7 @@ type Post struct {
 	ImageURL    string    `gorm:"size:255;not null;" json:"image_url"`
 	Budget      string    `gorm:"size:30;not null;" json:"budget"`
 	Status      string    `gorm:"size:255;not null;" json:"status"`
+	Paid        bool      `gorm:"size:12;not null;" json:"paid"`
 	Latitude    float32   `gorm:"not null" json:"latitude"`
 	Longitude   float32   `gorm:"not null" json:"longitude"`
 	Address     string    `gorm:"size:255;not null" json:"address"`
