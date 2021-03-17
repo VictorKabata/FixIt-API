@@ -166,7 +166,7 @@ func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 
 	users := []User{}
 
-	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+	err = db.Debug().Model(&User{}).Order("created_at desc").Limit(100).Find(&users).Error
 	if err != nil {
 		return &[]User{}, err
 	}

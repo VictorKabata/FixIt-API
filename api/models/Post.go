@@ -89,7 +89,7 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 
 	posts := []Post{}
 
-	err = db.Debug().Model(&Post{}).Where("status!=?", "Completed").Limit(100).Find(&posts).Error
+	err = db.Debug().Model(&Post{}).Where("status!=?", "Completed").Order("created_at  desc").Limit(100).Find(&posts).Error
 	if err != nil {
 		return &[]Post{}, err
 	}
@@ -188,7 +188,7 @@ func (b *Booking) FindPostBookings(db *gorm.DB, pid uint64) (*[]Booking, error) 
 
 	booking := []Booking{}
 
-	err = db.Debug().Model(&Post{}).Limit(100).Find(&booking).Error
+	err = db.Debug().Model(&Post{}).Order("bid asc").Limit(100).Find(&booking).Error
 	if err != nil {
 		return &[]Booking{}, err
 	}

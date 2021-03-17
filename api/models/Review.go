@@ -68,7 +68,7 @@ func (r *Review) FindAllReviews(db *gorm.DB) (*[]Review, error) {
 
 	reviews := []Review{}
 
-	err = db.Debug().Model(&Post{}).Limit(100).Find(&reviews).Error
+	err = db.Debug().Model(&Post{}).Order("created_at desc").Limit(100).Find(&reviews).Error
 	if err != nil {
 		return &[]Review{}, err
 	}
