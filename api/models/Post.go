@@ -89,7 +89,7 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 
 	posts := []Post{}
 
-	err = db.Debug().Model(&Post{}).Limit(100).Find(&posts).Error
+	err = db.Debug().Model(&Post{}).Where("status!=?", "Completed").Limit(100).Find(&posts).Error
 	if err != nil {
 		return &[]Post{}, err
 	}

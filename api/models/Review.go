@@ -54,7 +54,7 @@ func (r *Review) UploadReview(db *gorm.DB) (*Review, error) {
 	}
 
 	if r.ID != 0 {
-		err = db.Debug().Model(&User{}).Where("id=?", r.UserID).Take(&r.User).Error
+		err = db.Debug().Model(&User{}).Where("id=?", r.WorkerID).Take(&r.User).Error
 		if err != nil {
 			return &Review{}, err
 		}
