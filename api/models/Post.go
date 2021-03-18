@@ -43,7 +43,6 @@ func (p *Post) Prepare() {
 	p.Category = html.EscapeString(strings.TrimSpace(p.Category))
 	p.ImageURL = html.EscapeString(strings.TrimSpace(p.ImageURL))
 	p.Status = html.EscapeString(strings.TrimSpace(p.Status))
-	p.Paid = false
 	p.Address = html.EscapeString(strings.TrimSpace(p.Address))
 	p.Region = html.EscapeString(strings.TrimSpace(p.Region))
 	p.Country = html.EscapeString(strings.TrimSpace(p.Country))
