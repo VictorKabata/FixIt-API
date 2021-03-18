@@ -89,7 +89,7 @@ func (p *Post) FindAllPosts(db *gorm.DB) (*[]Post, error) {
 
 	posts := []Post{}
 
-	err = db.Debug().Model(&Post{}).Where("status!=?", "Completed").Order("created_at  desc").Limit(100).Find(&posts).Error
+	err = db.Debug().Model(&Post{}).Where("status!=?", "Completed").Order("created_at desc").Limit(100).Find(&posts).Error
 	if err != nil {
 		return &[]Post{}, err
 	}
@@ -122,19 +122,40 @@ func (p *Post) FindPostByID(db *gorm.DB, pid uint64) (*Post, error) {
 }
 
 //Update an existing post
-func (p *Post) UpdateAPost(db *gorm.DB) (*Post, error) {
+// func (p *Post) UpdateAPost(db *gorm.DB) (*Post, error) {
 
-	var err error
+// 	var err error
 
-	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{WorkerID: p.WorkerID, Description: p.Description, Category: p.Category, Budget: p.Budget, Status: p.Status, Address: p.Address, Region: p.Region, Country: p.Country, Latitude: p.Latitude, Longitude: p.Longitude, ImageURL: p.ImageURL, UpdatedAt: time.Now()}).Error
+// 	err = db.Debug().Model(&Post{}).Where("id = ?", p.ID).Updates(Post{WorkerID: p.WorkerID, Status: p.Status, Paid: p.Paid, UpdatedAt: time.Now()}).Error
+// 	if err != nil {
+// 		return &Post{}, err
+// 	}
+// 	if p.ID != 0 {
+// 		err = db.Debug().Model(&User{}).Where("id = ?", p.UserID).Take(&p.User).Error
+// 		if err != nil {
+// 			return &Post{}, err
+// 		}
+// 	}
+// 	return p, nil
+// }
+
+func (p *Post) UpdateAPost(db *gorm.DB, pid uint32) (*Post, error) {
+
+	db = db.Debug().Model(&Post{}).Where("id = ?", pid).Take(&Post{}).UpdateColumns(
+		map[string]interface{}{
+			"worker_id":  p.WorkerID,
+			"status":     p.Status,
+			"paid":       p.Paid,
+			"updated_at": time.Now(),
+		},
+	)
+	if db.Error != nil {
+		return &Post{}, db.Error
+	}
+	// This is the display the updated post
+	err := db.Debug().Model(&Post{}).Where("id = ?", pid).Take(&p).Error
 	if err != nil {
 		return &Post{}, err
-	}
-	if p.ID != 0 {
-		err = db.Debug().Model(&User{}).Where("id = ?", p.UserID).Take(&p.User).Error
-		if err != nil {
-			return &Post{}, err
-		}
 	}
 	return p, nil
 }
