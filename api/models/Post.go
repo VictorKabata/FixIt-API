@@ -240,7 +240,7 @@ func (p *Post) FindUserPosts(db *gorm.DB, pid uint64) (*[]Post, error) {
 
 	post := []Post{}
 
-	err = db.Debug().Model(&Post{}).Limit(100).Find(&post).Error
+	err = db.Debug().Model(&Post{}).Order("created_at desc").Limit(100).Find(&post).Error
 	if err != nil {
 		return &[]Post{}, err
 	}

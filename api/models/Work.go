@@ -139,7 +139,7 @@ func (w *Work) FindUserWorks(db *gorm.DB, pid uint64) (*[]Work, error) {
 
 	work := []Work{}
 
-	err = db.Debug().Model(&Work{}).Limit(100).Find(&work).Error
+	err = db.Debug().Model(&Work{}).Order("created_at desc").Limit(100).Find(&work).Error
 	if err != nil {
 		return &[]Work{}, err
 	}
