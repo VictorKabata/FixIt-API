@@ -91,7 +91,7 @@ func (r *Review) FindUserReviews(db *gorm.DB, pid uint64) (*[]Review, error) {
 
 	reviews := []Review{}
 
-	err = db.Debug().Model(&Review{}).Order("created_at desc").Limit(100).Where("user_id=?", pid).Find(&reviews).Error
+	err = db.Debug().Model(&Review{}).Order("created_at desc").Limit(100).Where("worker_id=?", pid).Find(&reviews).Error
 	if err != nil {
 		return &[]Review{}, err
 	}
